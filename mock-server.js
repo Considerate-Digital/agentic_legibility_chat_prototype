@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Mock server for all FLEX API endpoints defined in live_resources/endpoints/*.md
-// Rewrites all URLs: https://flex.account.gov.uk → http://localhost:8787
+// Rewrites all URLs: https://flex.account.gov.uk → http://localhost:8127
 //
 // Usage: node mock-server.js [port]
 'use strict'
