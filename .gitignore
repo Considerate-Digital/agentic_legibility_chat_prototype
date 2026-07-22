@@ -1,0 +1,38 @@
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Node
+node_modules/
+ui/node_modules/
+
+# Vite / build output
+ui/dist/
+ui/.vite/
+
+# Tauri
+src-tauri/binaries/
+src-tauri/gen/
+
+# Svelte
+.svelte-kit/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+.claude/
+.serena

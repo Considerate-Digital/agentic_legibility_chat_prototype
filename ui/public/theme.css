@@ -1,0 +1,865 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   theme.css — a thin layer ON TOP of gov.css. Load this AFTER gov.css.
+   gov.css stays untouched (structure + accessibility). This file has two parts:
+     1) TOKENS   — the design decisions, named, in one place.
+     2) OVERRIDES — re-style the few govuk components in use, via the tokens.
+   Change a token below and it affects everywhere it's referenced. both the
+   overrides here and the components' scoped styles (which use var(--t-…) too).
+   ──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+	/* ── surfaces + text ── */
+	--govuk-surface: #ffffff;
+	--govuk-surface-muted: #f3f2f1;
+	--govuk-sidebar-surface: #fafafa; /* sidebar surface (subtle off-white) */
+	--govuk-text-colour: #0b0c0c;
+	--govuk-secondary-text-colour: #505a5f;
+	--govuk-button-colour: #1d70b8; /* primary button + step badge fill */
+	--govuk-accent-colour: #1d70b8; /* inset-text accent stripe */
+	/* Per-element styling — general tokens; a per-card/element override sets the value,
+	   unset falls back to the default here. (button uses --govuk-button-colour above.) */
+	--govuk-card-surface: #f8f8fb; /* a card's background */
+	--govuk-card-accent: 1px solid var(--govuk-border-colour); /* a card's top edge; override → e.g. 4px solid <colour> */
+	--govuk-stat-colour: #1d70b8; /* a stat's number colour */
+	--govuk-task-list-accent: #1d70b8; /* a task-list's accent (left border + icon) */
+	--govuk-accent-soft: #e8eefb; /* light accent wash (active nav item) */
+
+	/* ── the "lighter, rounder, updated" decisions ── */
+	--govuk-radius: 12px; /* UI corner radius — rounded, modern */
+	--govuk-radius-small: 8px; /* small controls (inputs, chips) */
+	--govuk-radius-pill: 999px; /* pill buttons / tags */
+	--govuk-card-gap: 24px; /* gap between items inside a card flow */
+	--govuk-border-width: 1px; /* GOV.UK uses 2px */
+	--govuk-border-colour: #e8e8ee; /* light border (frames, dividers, cards) */
+	--govuk-input-border-colour: #c9ccd4; /* form-control border (softer than GOV.UK's ≥3:1 grey) */
+
+	/* ── hero / search flow ── */
+	--govuk-link-colour: #1d70b8; /* GOV.UK blue — CTAs / links / affordances */
+	--govuk-link-hover-colour: #003078; /* GOV.UK dark blue — hover / active */
+	--govuk-text-inverse-colour: #ffffff;
+	--govuk-brand-soft: #e8f1fb; /* light GOV-blue active row, search glow tint */
+	--govuk-hero-size: 64px; /* landing headline */
+	--govuk-h1-size: 40px; /* detail page title */
+	--govuk-h2-size: 28px; /* results-count heading */
+	--govuk-lead-size: 20px; /* lead paragraph under a heading */
+	--govuk-radius-large: 18px; /* hero search bar, large surfaces */
+	--govuk-faint-surface: #f3f4f6; /* empty-state icon bg, subtle fills */
+
+	/* ── accessibility — leave these alone ── */
+	--govuk-focus-colour: #ffdd00; /* GOV.UK focus yellow */
+}
+
+/* ── Overrides ───────────────────────────────────────────────────────────────
+   Re-style the govuk components we actually use, using the tokens. Loaded after
+   gov.css, so these win at equal specificity. We deliberately do not touch
+   :focus — gov.css keeps its accessible yellow focus ring. */
+
+.govuk-input,
+.govuk-select,
+.govuk-textarea {
+	border: var(--govuk-border-width) solid var(--govuk-input-border-colour);
+	border-radius: var(--govuk-radius-small);
+	padding: 10px 12px;
+}
+
+/* Modern, rounded CTAs flat pill buttons (replaces the
+   GOV.UK 2px bottom-edge shadow). */
+.govuk-button {
+	border: none;
+	border-radius: var(--govuk-radius, 12px); /* the radius token controls buttons */
+	padding: 12px 24px;
+	font-weight: 600;
+	box-shadow: none;
+	/* Colour on the base class (not only .govuk-card-canvas .govuk-button) so an exported
+	   button is the right colour anywhere, no wrapper needed. */
+	background: var(--govuk-button-colour, #1d70b8);
+}
+
+/* Inset text. accent-led, tinted */
+.govuk-inset-text {
+	border-left: 4px solid var(--govuk-accent-colour, #1d70b8);
+	background: var(--govuk-faint-surface, #f3f4f6);
+	border-radius: 0 3px 3px 0;
+	padding: 12px 16px;
+	margin-top: 0;
+}
+
+/* Body text with an element-level background tint (a mini "sub-card"). The colour is
+   applied inline per element so it never affects other body text; this only supplies
+   the padded box structure. */
+.govuk-body--boxed {
+	padding: 16px 18px;
+	border-radius: 8px;
+}
+
+/* ── GDS Transport (the GOV.UK typeface) ─────────────────────────────────────
+   gov.css only declares this pointing at /assets/fonts/*.woff2 (not bundled here),
+   so we self-host the two TTF faces from static/fonts. 400 = regular, 700 = bold,
+   matching GOV.UK's weight rules. Without this the app silently falls back to Arial. */
+@font-face {
+	font-family: 'GDS Transport';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/GDSTransportWebsite.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'GDS Transport';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/GDSTransportWebsite-Bold.ttf') format('truetype');
+}
+
+/* Form controls don't inherit font-family by default. make the custom buttons /
+   inputs / selects use the app font. (govuk-* controls set their own at higher
+   specificity, so the render panels are unaffected.) */
+button,
+input,
+select,
+textarea {
+	font-family: inherit;
+}
+
+/* Let the govuk-back-link / govuk-link styles sit on a <button>. */
+button.govuk-back-link {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+button.govuk-link {
+	padding: 0;
+	font: inherit;
+	/* govuk-link sets its blue via :link/:visited, which only match <a href>;
+	   a <button> needs the colour set explicitly. */
+	color: var(--govuk-link-colour);
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+/* ── gov.css fills ───────────────────────────────────────────────────────────
+   gov.css is a partial. it includes govuk-button / -input / -select /
+   -heading / -body / -list / -section-break, but not govuk-tag, govuk-back-link,
+   or the spacing-override utilities. These are the official GOV.UK Frontend rules
+   for the few we use, so the classes behave as designed. */
+
+.govuk-\!-margin-bottom-0 {
+	margin-bottom: 0 !important;
+}
+
+.govuk-tag {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 6px; /* rounded-rect data pill (prototype style) */
+	color: #0f385c; /* default = blue, GOV.UK Frontend v6 */
+	background-color: #d2e2f1;
+	font-size: 14px;
+	line-height: 1.3;
+	font-weight: 400;
+	white-space: nowrap;
+}
+/* Official GOV.UK tag colours (Frontend v6 values) — design-system.service.gov.uk/components/tag/all-colours */
+.govuk-tag--grey { color: #0b0c0c; background-color: #cecece; }
+.govuk-tag--green { color: #083d29; background-color: #cfe4dc; }
+.govuk-tag--teal { color: #0b4144; background-color: #d0e6e7; }
+.govuk-tag--blue { color: #0f385c; background-color: #d2e2f1; }
+.govuk-tag--purple { color: #2a1950; background-color: #ddd6ec; }
+.govuk-tag--magenta { color: #651b3e; background-color: #f4d7e5; }
+.govuk-tag--red { color: #651b1b; background-color: #f4d7d7; }
+.govuk-tag--orange { color: #7a3c1c; background-color: #fde4d7; }
+.govuk-tag--yellow { color: #7a3c1c; background-color: #ffee80; }
+
+.govuk-back-link {
+	display: inline-block;
+	position: relative;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding-left: 14px;
+	font-size: 16px;
+	line-height: 1.25;
+	color: var(--govuk-link-colour);
+	text-decoration: underline;
+}
+.govuk-back-link::before {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 3px;
+	width: 7px;
+	height: 7px;
+	margin: auto 0;
+	transform: rotate(225deg);
+	border: solid;
+	border-width: 1px 1px 0 0;
+	border-color: var(--govuk-link-colour);
+}
+.govuk-back-link:hover {
+	text-decoration-thickness: 3px;
+}
+.govuk-back-link:focus-visible {
+	outline: 3px solid var(--govuk-focus-colour);
+	outline-offset: 0;
+	background-color: var(--govuk-focus-colour);
+	text-decoration: none;
+}
+
+/* govuk-date-input is not in the gov.css file. These are the official
+   GOV.UK Frontend rules for it, so the day/month/year fields lay out as designed
+   (used by the generative playground's "date input"). */
+.govuk-date-input {
+	font-size: 0; /* collapse the whitespace between inline-block items */
+}
+.govuk-date-input__item {
+	display: inline-block;
+	margin-right: 20px;
+	margin-bottom: 0;
+}
+.govuk-date-input__item:last-child {
+	margin-right: 0;
+}
+.govuk-date-input__label {
+	display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Generative card components — the extended design-system pieces (govuk-card,
+   govuk-stat, govuk-reference, the govuk-card-step timeline, etc.). Lifted out of
+   the Svelte render components so all design-system CSS lives in this one file.
+   gov.css stays the untouched as a base. This is the layer on top.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* — card render surface + nodes — */
+/* Mobile-card width: the rendered card sits centred at a phone scale. */
+.govuk-card-canvas {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
+	max-width: 550px;
+	margin: 0 auto;
+}
+
+.govuk-card {
+	/* Self-contained so an exported card renders correctly with ONLY gov.css + theme.css —
+	   no dependency on the app's +layout font or a .govuk-card-flow wrapper. The font
+	   cascades to custom children (progress/dot titles). */
+	font-family: 'GDS Transport', arial, sans-serif;
+	background: var(--govuk-card-surface, #f8f8fb);
+	border: 1px solid var(--govuk-border-colour, #e8e8ee);
+	border-top: var(--govuk-card-accent, 1px solid var(--govuk-border-colour, #e8e8ee));
+	border-radius: var(--govuk-radius-large, 16px);
+	box-shadow: 0 1px 2px rgba(11, 12, 12, 0.04), 0 6px 18px rgba(11, 12, 12, 0.05);
+	padding: 42px;
+}
+/* Card child spacing (.govuk-card > *) lives at the END of this file so it wins by
+   source order over components that reset their own margins — see "Card child spacing". */
+.govuk-card__empty {
+	color: var(--govuk-secondary-text-colour, #505a5f);
+	margin: 0;
+}
+
+.govuk-card-flow {
+	display: flex;
+	flex-direction: column;
+	gap: var(--govuk-card-gap, 16px);
+	align-items: stretch;
+}
+
+.govuk-card-canvas .govuk-button {
+	background: var(--govuk-button-colour);
+	border-radius: var(--govuk-radius, 12px);
+	box-shadow: none;
+	margin-bottom: 0;
+}
+.govuk-card-canvas .govuk-button--secondary {
+	background: #fff;
+	color: var(--govuk-text-colour, #0b0c0c);
+	border: 1px solid var(--govuk-input-border-colour, #6f777b);
+}
+/* Hover darkens WHATEVER colour this button has — the theme token or a per-element
+   accent set inline via --govuk-button-colour. Overrides gov.css's fixed green
+   (#005a30) hover. Placed after the canvas-scoped rule so it wins on hover there too
+   (equal specificity → source order). */
+.govuk-button:hover {
+	background: color-mix(in srgb, var(--govuk-button-colour, #1d70b8) 85%, #000);
+}
+.govuk-button--secondary:hover {
+	background: #f3f2f1;
+}
+
+/* Step badge — a blue numbered circle, the same on every card. */
+.govuk-card-step__badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	flex: none;
+	border-radius: 999px;
+	font-size: 14px;
+	font-weight: 700;
+	background: var(--govuk-button-colour, #1d70b8);
+	color: #fff;
+}
+
+/* Sequencial behaviour option: separate cards. The badge sits on each card's top-left; the
+   branch line links each badge's bottom to the next badge's top and is hidden down an expanded card. */
+.govuk-card-timeline {
+	display: flex;
+	flex-direction: column;
+}
+.govuk-card-step {
+	position: relative;
+	padding-bottom: 8px; /* tighter gap between cards */
+}
+.govuk-card-step:last-child {
+	padding-bottom: 0;
+}
+.govuk-card-step__card {
+	padding: 0; /* rail + body provide the padding */
+	overflow: hidden;
+}
+.govuk-card-step__row {
+	display: flex;
+}
+.govuk-card-step__rail {
+	position: relative;
+	flex: none;
+	width: 44px;
+}
+.govuk-card-step__rail .govuk-card-step__badge {
+	position: absolute;
+	top: 16px;
+	left: 8px;
+	z-index: 1;
+}
+/* Line below the badge (badge-bottom → card bottom). */
+.govuk-card-step__rail::before {
+	content: '';
+	position: absolute;
+	left: 21px;
+	top: 44px;
+	bottom: 0;
+	width: 2px;
+	background: #c4d4e8;
+}
+/* Line above the badge (card top → badge-top). */
+.govuk-card-step__rail::after {
+	content: '';
+	position: absolute;
+	left: 21px;
+	top: 0;
+	height: 16px;
+	width: 2px;
+	background: #c4d4e8;
+}
+/* Connector across the gap to the next card. */
+.govuk-card-step:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	left: 21px;
+	bottom: 0;
+	width: 2px;
+	height: 8px;
+	background: #c4d4e8;
+}
+/* No visual line above the first badge or below the last. */
+.govuk-card-step:first-child .govuk-card-step__rail::after {
+	display: none;
+}
+.govuk-card-step:last-child .govuk-card-step__rail::before {
+	display: none;
+}
+/* No visual line down an expanded card. this breaks the line cleanly around it. */
+.govuk-card-step--open .govuk-card-step__rail::before,
+.govuk-card-step--open::after,
+.govuk-card-step--open + .govuk-card-step .govuk-card-step__rail::after {
+	display: none;
+}
+.govuk-card-step__body {
+	flex: 1;
+	min-width: 0;
+	padding: 16px 20px 18px 0;
+}
+.govuk-card-step__toggle {
+	display: flex;
+	align-items: center;
+	min-height: 28px;
+	width: 100%;
+	text-align: left;
+	font: inherit;
+	font-weight: 400;
+	font-size: 1.02rem;
+	color: var(--govuk-text-colour, #0b0c0c);
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+.govuk-card-step__toggle:hover {
+	color: var(--govuk-link-colour, #1d70b8);
+}
+
+
+/* Plain block wrapper — keeps inline elements (tags) at their natural width
+   instead of stretching as a flex child. */
+.govuk-card-item {
+	min-width: 0;
+}
+/* Neutralise GOV.UK's varied bottom margins (heading 50px, body 20px, button 0…) so
+   the flow gap is the SINGLE, consistent spacer between elements — controlled by the
+   density token. Within-field spacing (label/hint/control) is handled separately. */
+.govuk-card-item > * {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+/* Space the form group consistently */
+.govuk-card-item .govuk-form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-bottom: 0;
+}
+.govuk-card-item .govuk-form-group > * {
+	margin: 0;
+}
+
+.govuk-card-flow {
+	display: flex;
+	flex-direction: column;
+	gap: var(--govuk-card-gap, 16px);
+}
+
+.govuk-card-readout {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 10px 14px;
+	background: var(--govuk-surface-muted, #f3f2f1);
+	border-radius: var(--govuk-radius-small, 8px);
+}
+.govuk-card-readout__label {
+	font-weight: 700;
+}
+.govuk-card-readout__hint,
+.govuk-card-readout__value {
+	color: var(--govuk-secondary-text-colour, #505a5f);
+	font-size: 0.95em;
+}
+
+.govuk-details-static__summary {
+	margin-bottom: 8px;
+}
+
+/* Details — label hard-left, a blue chevron pinned to the far right, roomier
+   padding. Overrides gov.css, which draws a left ::before triangle and sizes the
+   summary to fit-content (both of which we undo so the row spans the full width). */
+.govuk-details {
+	margin: 6px 0;
+}
+.govuk-details__summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: auto; /* undo gov.css width: fit-content so the chevron reaches the edge */
+	padding: 16px 2px;
+	list-style: none;
+	cursor: pointer;
+	font-weight: 400;
+	color: var(--govuk-link-colour, #1d70b8);
+}
+.govuk-details__summary:hover {
+	color: #4c2c92; /* GOV.UK link-hover purple */
+}
+/* Kill gov.css's left disclosure triangle and the native marker. */
+.govuk-details__summary::before {
+	display: none;
+	content: none;
+}
+.govuk-details__summary::-webkit-details-marker {
+	display: none;
+}
+.govuk-details__summary-text {
+	text-decoration: none;
+}
+/* Chevron at the far right: points right when closed, rotates down when open. */
+.govuk-details__summary::after {
+	content: '';
+	flex: none;
+	width: 9px;
+	height: 9px;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: rotate(-45deg);
+	transition: transform 0.15s ease;
+}
+.govuk-details[open] > .govuk-details__summary::after {
+	transform: rotate(45deg);
+}
+.govuk-details[open] .govuk-details__summary {
+	margin-bottom: 0;
+}
+.govuk-details__text {
+	padding: 6px 2px 14px;
+}
+
+/* Progress radial — a ring filled to `percent`% in the element accent colour, with an
+   optional label beside it. `stroke-dasharray: <pct> 100` + pathLength=100 = pct% fill. */
+.govuk-progress {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: 14px;
+}
+.govuk-progress__ring {
+	flex: none;
+	transform: rotate(-90deg);
+}
+.govuk-progress__track {
+	fill: none;
+	stroke: #e8e8ee;
+	stroke-width: 5;
+}
+.govuk-progress__fill {
+	fill: none;
+	stroke-width: 5;
+	stroke-linecap: round;
+	transition: stroke-dasharray 0.3s ease;
+}
+/* Bold header + supporting line beside the ring / dot. */
+.govuk-progress__text,
+.govuk-dot__text {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+.govuk-progress__title,
+.govuk-dot__title {
+	font-weight: 700;
+	font-size: 19px;
+	line-height: 1.2;
+}
+.govuk-progress__sub,
+.govuk-dot__sub {
+	color: var(--govuk-secondary-text-colour, #505a5f);
+	line-height: 1.25;
+}
+
+/* Status dot — a large solid coloured circle (accent) with a header + supporting line. */
+.govuk-dot {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: 14px;
+}
+.govuk-dot__mark {
+	flex: none;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+}
+
+/* Two-column split — equal columns with a vertical divider between them. */
+.govuk-columns {
+	display: flex;
+	gap: 20px;
+	align-items: stretch;
+}
+.govuk-column {
+	flex: 1 1 0;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.govuk-column--divided {
+	border-left: 1px solid var(--govuk-border-colour, #b1b4b6);
+	padding-left: 20px;
+}
+
+/* Task list — left accent stripe, minimal rounded corners (≤3px). */
+.govuk-task-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.govuk-task-list__item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	background: var(--govuk-surface, #fff);
+	border: 1px solid var(--govuk-border-colour, #e8e8ee);
+	border-left: 4px solid var(--govuk-task-list-accent, #1d70b8);
+	border-radius: 0 3px 3px 0; /* square left edge — the accent stripe stays straight */
+}
+.govuk-task-list__icon {
+	flex: none;
+	display: inline-flex;
+	color: var(--govuk-task-list-accent, #1d70b8);
+}
+.govuk-task-list__name {
+	flex: 1;
+	min-width: 0;
+	font-weight: 400;
+}
+
+.govuk-task-list__status {
+	font-size: 14px;
+	font-weight: 400;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	padding: 3px 10px;
+	border-radius: 3px;
+	background: #eeeff0;
+	color: #383f43;
+	white-space: nowrap;
+}
+.govuk-task-list__status[data-status='required'] {
+	background: #fbeae9;
+	color: #942514;
+}
+.govuk-task-list__status[data-status='granted'],
+.govuk-task-list__status[data-status='done'] {
+	background: #e6f3ec;
+	color: #005a30;
+}
+.govuk-task-list__status[data-status='declined'] {
+	background: #fbeae9;
+	color: #d4351c;
+}
+/* GOV.UK task-list statuses: completed = plain text, incomplete = blue tag. */
+.govuk-task-list__status[data-status='completed'] {
+	background: transparent;
+	color: var(--govuk-text-colour, #0b0c0c);
+	text-transform: none;
+	letter-spacing: 0;
+	padding-inline: 0;
+}
+.govuk-task-list__status[data-status='incomplete'] {
+	background: #d2e2f1;
+	color: #144e81;
+	text-transform: none;
+	letter-spacing: 0;
+}
+.govuk-task-list__status[data-status='in progress'] {
+	background: #dbd5e9;
+	color: #3d2375;
+	text-transform: none;
+	letter-spacing: 0;
+}
+.govuk-task-list__status[data-status='bypassed'] {
+	background: #fcd6c3;
+	color: #6e3619;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.govuk-table--card {
+	width: 100%;
+	margin-bottom: 0;
+}
+
+/* Copyable reference field — grey rounded field: "Ref" + monospace code + copy icon. */
+.govuk-reference {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: var(--govuk-surface-muted, #f3f2f1);
+	border-radius: 8px;
+	padding: 10px 12px;
+}
+.govuk-reference__label {
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--govuk-secondary-text-colour, #505a5f);
+}
+.govuk-reference__code {
+	flex: 1;
+	min-width: 0;
+	font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+	font-size: 1em;
+	letter-spacing: 0.04em;
+	color: var(--govuk-text-colour, #0b0c0c);
+}
+.govuk-reference__copy {
+	flex: none;
+	display: inline-flex;
+	border: none;
+	background: none;
+	color: var(--govuk-secondary-text-colour, #505a5f);
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 4px;
+}
+.govuk-reference__copy:hover {
+	color: var(--govuk-link-colour, #1d70b8);
+	background: rgba(0, 0, 0, 0.05);
+}
+
+/* Emphasised numeric stat. */
+.govuk-stat {
+	margin: 0;
+	font-size: 36px;
+	font-weight: 700;
+	line-height: 1.1;
+	color: var(--govuk-stat-colour, #1d70b8);
+}
+
+/* Summary list */
+.govuk-summary-list {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+}
+.govuk-summary-list__row {
+	padding: 12px 0;
+	border-top: 1px solid var(--govuk-border-colour, #e8e8ee);
+}
+.govuk-summary-list__row:first-child {
+	border-top: none;
+	padding-top: 0;
+}
+.govuk-summary-list__heading {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+}
+.govuk-summary-list__key {
+	font-weight: 700;
+	/* Fill the row's width (minus the Change action) so long labels stop
+	   wrapping into a narrow column. */
+	flex: 1;
+	min-width: 0;
+}
+.govuk-summary-list__action {
+	flex: none;
+	color: var(--govuk-link-colour, #1d70b8);
+	text-decoration: underline;
+	font-size: 0.95em;
+}
+.govuk-summary-list__value {
+	margin: 2px 0 0;
+	color: var(--govuk-secondary-text-colour, #505a5f);
+}
+
+/* Divider */
+.govuk-section-break--visible {
+	border: none;
+	border-top: 1px solid var(--govuk-border-colour, #e8e8ee);
+	width: 100%;
+	margin: 0;
+}
+
+/* Full-width button option. */
+.govuk-button--full {
+	display: block;
+	width: 100%;
+	text-align: center;
+}
+
+/* Forward link with arrow (e.g. "Find out more →"). */
+.govuk-forward-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: var(--govuk-link-colour, #1d70b8);
+	background: none;
+	border: none;
+	padding: 0;
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+.govuk-forward-link:hover {
+	text-decoration: underline;
+}
+
+/* Tag with a leading icon (DOC / ID / INFO chip). */
+.govuk-tag--icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+/* Radio option cards (single choice) — selected = green border + tint + filled dot. */
+.govuk-radio-cards {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.govuk-radio-card {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 16px;
+	border: 1px solid var(--govuk-border-colour, #e8e8ee);
+	border-radius: 10px;
+	background: #fff;
+	cursor: pointer;
+}
+/* The native radio drives selection; visually hidden but still focusable. */
+.govuk-radio-card__input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+.govuk-radio-card__indicator {
+	flex: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 999px;
+	border: 2px solid var(--govuk-input-border-colour, #6f777b);
+}
+.govuk-radio-card:has(.govuk-radio-card__input:checked) {
+	border: 2px solid #00703c;
+	background: #eefaf1;
+	padding: 13px 15px;
+}
+.govuk-radio-card:has(.govuk-radio-card__input:checked) .govuk-radio-card__indicator {
+	border-color: #00703c;
+	background: #00703c;
+	box-shadow: inset 0 0 0 4px #fff;
+}
+.govuk-radio-card:has(.govuk-radio-card__input:checked) .govuk-radio-card__label {
+	font-weight: 700;
+}
+/* Keyboard focus ring on the whole card. */
+.govuk-radio-card:has(.govuk-radio-card__input:focus-visible) {
+	outline: 3px solid var(--govuk-focus-colour, #fd0);
+	outline-offset: 1px;
+}
+
+.govuk-card__unknown {
+	color: #d4351c;
+}
+
+/* ── Card child spacing ──────────────────────────────────────────────────────
+   Space a BARE card's direct children with margins (NOT flex) so inline elements —
+   tags, links — keep their natural width instead of stretching. Inert in the live
+   playground, where the single direct child is a .govuk-card-flow that supplies its
+   own gap.
+
+   MUST stay at the very bottom of this file. Several components reset their own margin
+   at equal specificity (.govuk-task-list, .govuk-stat, .govuk-summary-list,
+   .govuk-section-break); this rule has to come AFTER them so it wins by source order
+   and keeps ONE consistent gap between card children. No !important is used, so a
+   consuming codebase can still override the gap with a normal rule — just keep any new
+   card-child spacing rules below this block. */
+.govuk-card > * {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.govuk-card > * + * {
+	margin-top: var(--govuk-card-gap, 16px);
+}

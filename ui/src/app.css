@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "highlight.js/styles/github.css";
+
+:root {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+.md-link {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.md-link:hover { color: #1d4ed8; }
+
+/* Prose overrides for compact chat bubbles */
+.prose { max-width: none; font-size: 0.875rem; line-height: 1.6; }
+.prose :first-child { margin-top: 0; }
+.prose :last-child  { margin-bottom: 0; }
+.prose pre { background: #f6f8fa; border-radius: 6px; padding: 0.75rem 1rem; overflow-x: auto; font-size: 0.8125rem; }
+.prose code:not(pre code) { background: #f0f0f0; padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.85em; }

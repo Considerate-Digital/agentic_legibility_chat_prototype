@@ -1,0 +1,40 @@
+[package]
+name = "legibility-chat"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "legibility_chat_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[example]]
+name = "legibility_chat_smoke"
+path = "examples/legibility_chat_smoke.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+reqwest = { version = "0.12", features = ["json", "stream"] }
+futures-util = "0.3"
+
+# Logging — `tracing` for structured logs, `tracing-subscriber` for the env-filter
+# initialisation so `RUST_LOG=legibility_chat=debug` works out of the box.
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serde_yaml = "0.9"
+dirs = "5"
+
+[dev-dependencies]
+tempfile = "3"
