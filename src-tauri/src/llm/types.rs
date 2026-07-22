@@ -88,41 +88,6 @@ pub struct LLMFunctionDef {
     pub parameters: serde_json::Value,
 }
 
-// ── SSE streaming types ──────────────────────────────────────────────────────
-
-#[derive(Debug, Deserialize)]
-pub struct StreamChunk {
-    pub choices: Vec<StreamChoice>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct StreamChoice {
-    pub delta: Delta,
-    pub finish_reason: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Default)]
-pub struct Delta {
-    pub role: Option<String>,
-    pub content: Option<String>,
-    pub tool_calls: Option<Vec<PartialToolCall>>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct PartialToolCall {
-    pub index: usize,
-    pub id: Option<String>,
-    #[serde(rename = "type")]
-    pub call_type: Option<String>,
-    pub function: Option<PartialFunctionCall>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct PartialFunctionCall {
-    pub name: Option<String>,
-    pub arguments: Option<String>,
-}
-
 /// Non-streaming response shapes (for the state-evaluation call)
 #[derive(Debug, Deserialize)]
 pub struct CompletionResponse {

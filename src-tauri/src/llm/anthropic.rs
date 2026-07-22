@@ -383,16 +383,6 @@ fn translate_response(resp: AnthropicResponse) -> CompletionOutcome {
 
 // ── SSE streaming ────────────────────────────────────────────────────────
 
-/// Tracks the kind of each content block announced by Anthropic's
-/// `content_block_start`. We need this to disambiguate subsequent
-/// `content_block_delta` events, since the delta shape differs for text
-/// vs tool_use blocks.
-#[derive(Debug, Clone)]
-enum BlockKind {
-    Text,
-    ToolUse { id: String, name: String },
-}
-
 /// Parse one SSE block from an Anthropic streaming response.
 ///
 /// Anthropic's stream is a sequence of named events. Each block contains
@@ -522,14 +512,6 @@ fn apply_event(
             }
         }
     }
-}
-
-// BlockKind is intentionally retained as a future extension point: if we
-// ever need to handle per-index state across SSE blocks more sophisticated
-// than the existing tool_accum, this is where it would live.
-#[allow(dead_code)]
-fn _block_kind_used() -> Option<BlockKind> {
-    None
 }
 
 #[cfg(test)]

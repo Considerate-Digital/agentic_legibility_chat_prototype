@@ -1,5 +1,3 @@
-use serde_json::Value;
-
 pub fn rand_u32() -> u32 {
     // Simple deterministic stub — not cryptographically random
     std::time::SystemTime::now()
@@ -50,35 +48,3 @@ pub fn fetch(args: &serde_json::Value) -> String {
     }
 }
 
-// report_service_step is intercepted by Tauri before reaching the sidecar.
-// This stub exists so the symbol is available if called without a Tauri host.
-pub fn report_service_step(args: &Value) -> String {
-    format!(
-        "[report_service_step] service={} step={} status={}",
-        args["service_id"].as_str().unwrap_or("?"),
-        args["step_number"],
-        args["status"].as_str().unwrap_or("?")
-    )
-}
-
-#[allow(dead_code)]
-enum InputType {
-    Text,
-    Number,
-    Date,
-    Email,
-    Select(Vec<String>),
-}
-
-#[allow(dead_code)]
-struct UiInput {
-    input_type: InputType,
-    name: String,
-    description: String,
-}
-
-// ui_input is handled specially in call_tool (populates ui_interaction).
-// This stub is never called directly.
-pub fn ui_input(_args: &Value) -> String {
-    "[awaiting user input]".to_string()
-}

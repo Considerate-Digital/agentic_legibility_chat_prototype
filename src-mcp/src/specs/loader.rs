@@ -577,21 +577,6 @@ pub fn spawn_rescan_loop(
     LoaderHandle { _rescan: handle }
 }
 
-/// Lightweight summary of a service or plan doc for the resource
-/// listing endpoints. Serialized to JSON.
-#[derive(Debug, Serialize)]
-pub struct CollectionItem {
-    pub name: String,
-    pub display_name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub r#type: Option<String>,
-    pub endpoint_count: usize,
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

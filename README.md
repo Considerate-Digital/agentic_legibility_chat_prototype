@@ -29,7 +29,7 @@ Markdown files under `src-tauri/resources/defaults/tools/state/`, one per tool, 
 
 ### Cards
 
-Markdown files under `src-tauri/resources/defaults/cards/` (`service_overview`, `step_list`, `step_detail`, `steps_grouped`, `step_checklist`, `input_preview`, `progress_summary`). Each has frontmatter (`name`, `description`, `relevant_states`), prose generation instructions, and an example HTML template. When `cards_enabled` is on, a card-selector LLM call picks a card by name/description, then a second LLM call renders the card's `generation_instructions` into HTML, which `CardBubble.svelte` renders via `{@html}`. Cards deliberately share one fixed CSS class palette (from a sibling project's stylesheet, `../../service_creator/src/app.css`, referenced by class name only — not bundled here) rather than each shipping its own `<style>` block; when authoring a new card, only use documented classes from that palette.
+Markdown files under `src-tauri/resources/defaults/cards/`: `action_checklist` (ActionChecklist — a checklist of concrete next actions), `case_progress` (CaseProgress — a row of stage cards showing progress through a plan), and `key_facts` (KeyFacts — 3–5 key facts, figures, deadlines, or criteria as labelled rows). Each has frontmatter (`name`, `description`, `relevant_states`) and prose generation instructions. When `cards_enabled` is on, a card-selector LLM call picks a card by name/description, then a second LLM call renders the card's generation instructions into HTML, which `CardBubble.svelte` renders via `{@html}`. Cards deliberately share one fixed CSS class palette (from a sibling project's stylesheet, `../../service_creator/src/app.css`, referenced by class name only — not bundled here) rather than each shipping its own `<style>` block; when authoring a new card, only use documented classes from that palette.
 
 ### Bundled resources and overrides
 
@@ -108,7 +108,6 @@ ui/
 ## Follow-up work
 
 - No frontend lint or automated test suite exists (`ui/package.json` only has `check`); consider adding one before the component count grows further.
-- `Cargo.lock` is gitignored even though this is an application (not a library) workspace — Rust convention is normally to commit it for binaries, for reproducible builds.
 
 ### Authors and Support
 This project was made by Alex and Jen at Considerate Digital. If you need support please [contact us](https://considerate.digital).
