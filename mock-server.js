@@ -411,15 +411,15 @@ const ROUTES = [
   {
     method: 'POST', path: /^\/choose-address-entry-method\/([^/]+)$/,
     status: 200,
-    handler: (body) => ({ 
-      usePostcodeLookup: body?.usePostcodeLookup   
+    handler: (_, body) => ({
+      usePostcodeLookup: body?.usePostcodeLookup
     }),
   },
 
   {
     method: 'POST', path: /^\/find-address-by-postcode\/([^/]+)$/,
     status: 200,
-    handler: (body) => ({
+    handler: (_, body) => ({
       addressLine1: body?.buildingNumberOrName ? body.buildingNumberOrName + " " + DRIVER.address.street: DRIVER.address.line1,
       addressLine2: DRIVER.address.line2,
       townOrCity: DRIVER.address.town,
@@ -429,12 +429,12 @@ const ROUTES = [
   {
     method: 'POST', path: /^\/enter-address-manually\/([^/]+)$/,
     status: 200,
-    handler: (body) => (body)
+    handler: (_, body) => (body)
   },
   {
     method: 'POST', path: /^\/confirm-new-address\/([^/]+)$/,
     status: 200,
-    handler: (body) => ({
+    handler: (_, body) => ({
       confirmed: body?.confirmed ?? false,
       addressLine1: body?.addressLine1 ?? DRIVER.address.line1,
       addressLine2: body?.addressLine2 ?? DRIVER.address.line2,
