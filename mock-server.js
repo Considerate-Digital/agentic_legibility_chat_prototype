@@ -409,7 +409,7 @@ const ROUTES = [
   },
   // ── /S. Rickman – DVLA mock update address  ─────────────────────────────
   {
-    method: 'POST', path: /^\/choose-address-entry-method\/([^/]+)$/,
+    method: 'POST', path: /^\/choose-address-entry-method$/,
     status: 200,
     handler: (_, body) => ({
       usePostcodeLookup: body?.usePostcodeLookup
@@ -417,7 +417,7 @@ const ROUTES = [
   },
 
   {
-    method: 'POST', path: /^\/find-address-by-postcode\/([^/]+)$/,
+    method: 'POST', path: /^\/find-address-by-postcode$/,
     status: 200,
     handler: (_, body) => ({
       addressLine1: body?.buildingNumberOrName ? body.buildingNumberOrName + " " + DRIVER.address.street: DRIVER.address.line1,
@@ -427,12 +427,12 @@ const ROUTES = [
     }),
   },
   {
-    method: 'POST', path: /^\/enter-address-manually\/([^/]+)$/,
+    method: 'POST', path: /^\/enter-address-manually$/,
     status: 200,
     handler: (_, body) => (body)
   },
   {
-    method: 'POST', path: /^\/confirm-new-address\/([^/]+)$/,
+    method: 'POST', path: /^\/confirm-new-address$/,
     status: 200,
     handler: (_, body) => ({
       confirmed: body?.confirmed ?? false,
