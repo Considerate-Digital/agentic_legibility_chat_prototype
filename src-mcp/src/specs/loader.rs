@@ -421,6 +421,7 @@ fn load_doc(
         rel_path,
         frontmatter,
         body,
+        raw,
         endpoint_refs: Vec::new(),
     })
 }

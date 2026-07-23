@@ -44,7 +44,7 @@ const DRIVER = {
   lastName: 'Morgan',
   gender: 'F',
   dateOfBirth: '1975-03-11',
-  address: { line1: '12 Elm Street', line2: '', town: 'Bristol', county: '', postcode: 'BS1 5AU' },
+  address: { numberOrName: "12", street: "Elm Street", line1: '12 Elm Street', line2: '', town: 'Bristol', county: '', postcode: 'BS1 5AU' },
 }
 
 const SHARE_CODE = {
@@ -407,6 +407,44 @@ const ROUTES = [
       parent: body?.parent ?? null,
     }),
   },
+  // ── /S. Rickman – DVLA mock update address  ─────────────────────────────
+  {
+    method: 'POST', path: /^\/choose-address-entry-method\/([^/]+)$/,
+    status: 200,
+    handler: (body) => ({ 
+      usePostcodeLookup: body?.usePostcodeLookup   
+    }),
+  },
+
+  {
+    method: 'POST', path: /^\/find-address-by-postcode\/([^/]+)$/,
+    status: 200,
+    handler: (body) => ({
+      addressLine1: body?.buildingNumberOrName ? body.buildingNumberOrName + " " + DRIVER.address.street: DRIVER.address.line1,
+      addressLine2: DRIVER.address.line2,
+      townOrCity: DRIVER.address.town,
+      postcode: body?.postcode ?? DRIVER.address.postcode,
+    }),
+  },
+  {
+    method: 'POST', path: /^\/enter-address-manually\/([^/]+)$/,
+    status: 200,
+    handler: (body) => (body)
+  },
+  {
+    method: 'POST', path: /^\/confirm-new-address\/([^/]+)$/,
+    status: 200,
+    handler: (body) => ({
+      confirmed: body?.confirmed ?? false,
+      addressLine1: body?.addressLine1 ?? DRIVER.address.line1,
+      addressLine2: body?.addressLine2 ?? DRIVER.address.line2,
+      townOrCity: body?.townOrCity ?? DRIVER.address.town,
+      postcode: body?.postcode ?? DRIVER.address.postcode,
+
+    })
+  },
+
+
 ]
 
 // ── Request handling ──────────────────────────────────────────────────────────

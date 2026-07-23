@@ -112,6 +112,8 @@ pub struct Doc {
     pub frontmatter: Frontmatter,
     /// Markdown body, with the front-matter block stripped.
     pub body: String,
+    /// Full raw document text with body and frontmatter combined.
+    pub raw: String,
     /// Endpoint references parsed out of the body. Only populated for
     /// `Service` and `Plan` docs; empty for `Endpoint` docs.
     pub endpoint_refs: Vec<EndpointRef>,

@@ -12,6 +12,7 @@ use serde_json::{json, Value};
 use crate::context::AppContext;
 use crate::protocol::McpToolDef;
 use crate::specs::{search as spec_search, Doc, DocKind, SpecIndex};
+use convert_case::ccase;
 
 const TOOL_NAMES: &[&str] = &[
     "list_endpoints",
@@ -83,7 +84,7 @@ pub fn tool_defs() -> Vec<McpToolDef> {
         },
         McpToolDef {
             name: "get_endpoint".into(),
-            description: "Fetch the full content of one specific API endpoint, including HTTP method, URL, request/response examples, parameters, headers, error codes, and any narrative description.\n\nCall this when the user asks about a specific endpoint — 'show me the endpoints for this service', 'what does getDrivingLicence return?', 'what params does postShareCode need?', 'how do I call submitForm?'. Pass the endpoint's file stem name (e.g. 'postShareCode', 'getDrivingLicence').\n\nDo NOT call this when you don't yet know which endpoint you want — use list_endpoints or search_specs first to find the right one. Do NOT call this for benefits/policy lookup.".into(),
+            description: "Fetch the full content of one specific API endpoint, including HTTP method, URL, request/response examples, parameters, headers, error codes, and any narrative description.\n\nCall this when the user asks about a specific endpoint — 'show me the endpoints for this service', 'what does get_driving_licence return?', 'what params does post_share_code need?', 'how do I call submit_form?'. Pass the endpoint's file stem name in snake case (e.g. 'post_share_code' rather than 'post-share-code', 'get_driving_licence' instead of 'get-driving-licence').\n\nDo NOT call this when you don't yet know which endpoint you want — use list_endpoints or search_specs first to find the right one. Do NOT call this for benefits/policy lookup.".into(),
             input_schema: json!({
                 "type": "object",
                 "properties": {
@@ -241,11 +242,12 @@ async fn get_endpoint(ctx: &AppContext, args: &Value) -> Result<String, String> 
     let name = args["name"]
         .as_str()
         .ok_or("get_endpoint requires a 'name' string argument")?;
+    let name = ccase!(snake, &name);
     let index = ctx.spec_index.as_ref().unwrap().read().await;
     index
-        .get(DocKind::Endpoint, None, name)
-        .map(|d| d.body.clone())
-        .ok_or_else(|| not_found("endpoint", name))
+        .get(DocKind::Endpoint, None, &name)
+        .map(|d| d.raw.clone())
+        .ok_or_else(|| not_found("endpoint", &name))
 }
 
 async fn list_services(ctx: &AppContext) -> Result<String, String> {
