@@ -47,8 +47,6 @@ If you don't yet know the relevant plan or service, call `list_plans`, `list_ser
 
 ### 2. Handle multi-department cases in-plan
 
-There is no separate "complex plan" state. If the user's situation spans multiple government departments or agencies, you handle it here:
-
 - map out all departments involved
 - identify dependencies between departmental processes (e.g. Home Office status affects DWP entitlement)
 - flag potential conflicts or complications (one application affecting another benefit)

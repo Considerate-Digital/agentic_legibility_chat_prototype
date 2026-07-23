@@ -151,7 +151,7 @@
               { id: uid(), role: 'assistant', content: streamingContent },
             ]
           }
-          streamingContent = ''
+          streamingContent = ' '
         }
         isStreaming = false
       }),

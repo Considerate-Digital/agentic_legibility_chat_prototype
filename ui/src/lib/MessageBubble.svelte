@@ -43,7 +43,7 @@
 
 {:else if msg.role === 'assistant'}
   <div class="flex">
-    <div class="max-w-[80%] bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm {streaming ? 'border-blue-200' : ''}">
+    <div class="max-w-[80%] bg-white  rounded-2xl rounded-tl-sm px-4 py-2.5">
       <!-- prose class applies @tailwindcss/typography styles -->
       <div class="prose">
         <!-- eslint-disable-next-line svelte/no-at-html-tags -->
