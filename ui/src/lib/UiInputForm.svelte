@@ -14,8 +14,10 @@
   let selectedOption = $state('')
   let submitting = $state(false)
 
+  const isSelect = $derived(request.input_type === 'select' && (request.options?.length ?? 0) > 0)
+
   async function submit() {
-    const submitted = request.input_type === 'select' ? selectedOption : value.trim()
+    const submitted = isSelect ? selectedOption : value.trim()
     if (!submitted || submitting) return
     submitting = true
     await invoke('submit_ui_input', { value: submitted })
@@ -23,7 +25,7 @@
   }
 
   function onKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey && request.input_type !== 'select') {
+    if (e.key === 'Enter' && !e.shiftKey && !isSelect) {
       e.preventDefault()
       submit()
     }
@@ -36,7 +38,7 @@
     {request.description}
   </label>
 
-  {#if request.input_type === 'select' && request.options}
+  {#if isSelect}
     <div class="mb-2 flex flex-wrap gap-2">
       {#each request.options as opt}
         <button
@@ -66,7 +68,7 @@
   <div class="flex justify-end">
     <button
       onclick={submit}
-      disabled={submitting || (request.input_type === 'select' ? !selectedOption : !value.trim())}
+      disabled={submitting || (isSelect ? !selectedOption : !value.trim())}
       class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white
              hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
     >

@@ -61,15 +61,23 @@ pub async fn call_tool(name: &str, args: Value, ctx: &AppContext) -> ToolCallRes
     // ui_input is special: it populates ui_interaction for Tauri to intercept
     if name == "ui_input" {
         let session_id = format!("ui_{:08X}", stubs::rand_u32());
-        let options = args["options"].as_array().map(|a| {
+        let options: Option<Vec<String>> = args["options"].as_array().map(|a| {
             a.iter().filter_map(|v| v.as_str().map(|s| s.to_string())).collect()
         });
+        let requested_type = args["input_type"].as_str().unwrap_or("text");
+        // A "select" with no usable options can't be rendered as a choice, so it must
+        // fall back to a plain text field rather than leave the user with no way to respond.
+        let (input_type, options) = match (requested_type, &options) {
+            ("select", Some(opts)) if !opts.is_empty() => ("select".to_string(), options),
+            ("select", _) => ("text".to_string(), None),
+            (other, _) => (other.to_string(), options),
+        };
         return ToolCallResult {
             content: vec![ToolContent { content_type: "text".into(), text: "[awaiting user input]".into() }],
             is_error: false,
             ui_interaction: Some(UiInteractionRequest {
                 session_id,
-                input_type: args["input_type"].as_str().unwrap_or("text").to_string(),
+                input_type,
                 name: args["name"].as_str().unwrap_or("input").to_string(),
                 description: args["description"].as_str().unwrap_or("").to_string(),
                 options,
