@@ -67,7 +67,7 @@ pub struct AppConfig {
 }
 
 fn default_cards_enabled() -> bool {
-    true
+    false
 }
 
 impl Default for AppConfig {
