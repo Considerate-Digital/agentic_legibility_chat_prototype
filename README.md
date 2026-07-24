@@ -29,7 +29,7 @@ Markdown files under `src-tauri/resources/defaults/tools/state/`, one per tool, 
 
 ### Cards
 
-Markdown files under `src-tauri/resources/defaults/cards/`: `action_checklist` (ActionChecklist — a checklist of concrete next actions), `case_progress` (CaseProgress — a row of stage cards showing progress through a plan), and `key_facts` (KeyFacts — 3–5 key facts, figures, deadlines, or criteria as labelled rows). Each has frontmatter (`name`, `description`, `relevant_states`) and prose generation instructions. When `cards_enabled` is on, a card-selector LLM call picks a card by name/description, then a second LLM call renders the card's generation instructions into HTML, which `CardBubble.svelte` renders via `{@html}`. Cards deliberately share one fixed CSS class palette (from a sibling project's stylesheet, `../../service_creator/src/app.css`, referenced by class name only — not bundled here) rather than each shipping its own `<style>` block; when authoring a new card, only use documented classes from that palette.
+Markdown files under `src-tauri/resources/defaults/cards/`: `action_checklist` (ActionChecklist — a checklist of concrete next actions), `case_progress` (CaseProgress — a row of stage cards showing progress through a plan), and `key_facts` (KeyFacts — 3–5 key facts, figures, deadlines, or criteria as labelled rows). Each has frontmatter (`name`, `description`, `relevant_states`) and prose generation instructions. When `cards_enabled` is on, a card-selector LLM call picks a card by name/description, then a second LLM call renders the card's generation instructions into HTML, which `CardBubble.svelte` renders via `{@html}`. 
 
 ### Bundled resources and overrides
 
